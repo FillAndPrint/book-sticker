@@ -1,0 +1,685 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Premium 18 Book Stickers Generator (Validated Edition)</title>
+    
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght=500;600;700&family=Quicksand:wght=600;700&display=swap" rel="stylesheet">
+    
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+
+    <style>
+        :root {
+            --bg-app: #f5f3ef;
+            --text-dark: #2c3e50;
+            --border-main: #2c3e50;
+            --card-radius: 12px;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Quicksand', sans-serif;
+            background-color: var(--bg-app);
+            color: var(--text-dark);
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        /* Home Page Button */
+        .home-nav {
+            width: 100%;
+            max-width: 550px;
+            display: flex;
+            justify-content: flex-start;
+            margin-bottom: 15px;
+        }
+
+        .btn-home {
+            display: inline-flex;
+            align-items: center;
+            background-color: #ffffff;
+            color: var(--text-dark);
+            border: 2px solid var(--border-main);
+            padding: 8px 16px;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: 600;
+            font-size: 0.95rem;
+            text-decoration: none;
+            border-radius: 8px;
+            box-shadow: 0 3px 0px var(--border-main);
+            transition: transform 0.1s, box-shadow 0.1s;
+        }
+
+        .btn-home:active {
+            transform: translateY(3px);
+            box-shadow: 0 0px 0px var(--border-main);
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 25px;
+        }
+
+        header h1 {
+            font-family: 'Fredoka', sans-serif;
+            color: #2c3e50;
+            font-size: 2.2rem;
+            margin-bottom: 5px;
+        }
+
+        .form-container {
+            width: 100%;
+            max-width: 550px;
+            background: #ffffff;
+            padding: 25px;
+            border-radius: 16px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.05);
+            margin-bottom: 30px;
+            border: 2px solid var(--border-main);
+        }
+
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 12px;
+        }
+
+        .form-group {
+            margin-bottom: 10px;
+        }
+
+        .full-width {
+            grid-column: span 2;
+        }
+
+        label {
+            display: block;
+            font-weight: 700;
+            margin-bottom: 4px;
+            font-family: 'Fredoka', sans-serif;
+            font-size: 0.95rem;
+        }
+
+        input[type="text"], input[type="file"] {
+            width: 100%;
+            padding: 10px 14px;
+            border: 2px solid var(--border-main);
+            border-radius: 8px;
+            font-family: inherit;
+            font-size: 0.95rem;
+            outline: none;
+        }
+
+        input[disabled] {
+            background-color: #f1f5f9;
+            color: #94a3b8;
+            border: 2px dashed #cbd5e1;
+            cursor: not-allowed;
+        }
+
+        .btn-update {
+            grid-column: span 2;
+            width: 100%;
+            background-color: #34495e;
+            color: white;
+            border: 2px solid var(--border-main);
+            padding: 12px;
+            font-size: 1rem;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 0px #1a252f;
+            transition: transform 0.1s, box-shadow 0.1s;
+            margin-top: 5px;
+        }
+
+        .btn-update:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px var(--border-main);
+        }
+
+        .btn-pay-download {
+            grid-column: span 2;
+            width: 100%;
+            background-color: #27ae60;
+            color: white;
+            border: 2px solid #219653;
+            padding: 14px;
+            font-size: 1.1rem;
+            font-family: 'Fredoka', sans-serif;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow: 0 4px 0px #1e7e43;
+            transition: transform 0.1s, box-shadow 0.1s;
+            margin-top: 8px;
+        }
+
+        .btn-pay-download:active {
+            transform: translateY(4px);
+            box-shadow: 0 0px 0px #219653;
+        }
+
+        #print-rendering-zone {
+            position: absolute;
+            left: -9999px;
+            top: -9999px;
+        }
+
+        /* Fixed A4 Printable Matrix Grid */
+        .a4-document {
+            width: 210mm;
+            height: 297mm;
+            background: #ffffff;
+            padding: 6mm; 
+            display: grid;
+            grid-template-columns: repeat(3, 64mm); 
+            grid-template-rows: repeat(6, 46mm);    
+            gap: 3mm 4mm; 
+            box-sizing: border-box;
+            overflow: hidden;
+        }
+
+        /* Premium Sticker Layout */
+        .sticker-card {
+            width: 64mm;
+            height: 46mm;
+            border: 2px solid var(--border-main);
+            border-radius: var(--card-radius);
+            position: relative;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            padding: 6px 6px 3px 6px; 
+            box-sizing: border-box;
+            box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Vibrant Palette Theme Variations */
+        .sticker-card:nth-child(4n+1) { background: #1b3a4b; } 
+        .sticker-card:nth-child(4n+2) { background: #0f4c3a; } 
+        .sticker-card:nth-child(4n+3) { background: #5c061a; } 
+        .sticker-card:nth-child(4n)    { background: #b05a00; } 
+
+        /* Top Full-Width Banner Zone for Student Name */
+        .name-banner-row {
+            width: 100%;
+            height: 10mm;
+            display: flex;
+            align-items: center;
+            border-bottom: 1.5px dashed rgba(255, 255, 255, 0.3);
+            padding: 0 6px;
+            background: rgba(255, 255, 255, 0.08);
+            border-radius: 6px;
+            margin-bottom: 4px;
+            overflow: hidden;
+        }
+
+        .name-banner-row::before {
+            content: "👤";
+            display: inline-block;
+            margin-right: 6px;
+            font-size: 11pt;
+            flex-shrink: 0;
+        }
+
+        .name-banner-row strong {
+            font-size: 8pt;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'Fredoka', sans-serif;
+            margin-right: 4px;
+            flex-shrink: 0;
+        }
+
+        .name-banner-row .name-span {
+            font-weight: 700;
+            color: #ffffff;
+            font-size: 9.5pt;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            flex: 1;
+            letter-spacing: 0.3px;
+        }
+
+        /* Bottom Section containing Data Canvas and Graphics Elements */
+        .bottom-split-zone {
+            display: flex;
+            flex: 1;
+            width: 100%;
+            justify-content: space-between;
+            overflow: hidden;
+        }
+
+        /* Left Content: Data Panel */
+        .info-side {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            gap: 1px;
+            overflow: hidden;
+            background: rgba(255, 255, 255, 0.05);
+            border-radius: 6px;
+            padding-left: 6px;
+            height: 23.5mm;
+        }
+
+        .text-row {
+            font-size: 7.5pt;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.9);
+            display: flex;
+            align-items: center;
+            height: 15px;
+            padding-left: 2px;
+            overflow: hidden;
+        }
+
+        .text-row::before {
+            display: inline-block;
+            margin-right: 6px;
+            font-size: 8pt;
+            text-align: center;
+            flex-shrink: 0;
+        }
+        .row-father::before  { content: "👨‍👦"; }
+        .row-roll::before    { content: "🆔"; }
+        .row-phone::before   { content: "📱"; }
+        .row-class::before   { content: "🎓"; }
+        .row-subject::before { content: "📚"; }
+
+        .text-row strong {
+            width: 38px; 
+            font-size: 6.5pt;
+            color: rgba(255, 255, 255, 0.75);
+            font-family: 'Fredoka', sans-serif;
+            display: inline-block;
+            flex-shrink: 0;
+        }
+
+        .text-row .val-span {
+            color: #ffffff; 
+            font-weight: 600;
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            display: inline-block;
+            width: calc(100% - 38px);
+        }
+
+        /* Branding Footer Row */
+        .branding-footer-row {
+            width: 100%;
+            margin-top: 5px;
+            font-size: 4.8pt;
+            font-weight: 700;
+            color: rgba(255, 255, 255, 0.85);
+            font-family: 'Fredoka', sans-serif;
+            letter-spacing: 0.3px;
+            text-align: center;
+            padding: 1px 0 0 0;
+            border-top: 1px dashed rgba(255, 255, 255, 0.15);
+            clear: both;
+        }
+
+        /* Right Structural Block - ఫోటో మరియు QR ని ఇంకాస్త కిందికి జరపడానికి మార్పులు */
+        .right-media-side {
+            width: 18.5mm; 
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: flex-end; /* కింది వైపునకు నెట్టడానికి */
+            padding-bottom: 1px; /* బాటమ్ అంచుకు మరింత దగ్గరగా */
+            gap: 2px;
+            flex-shrink: 0;
+            height: 24mm; /* గరిష్ఠ ఎత్తుకు పెంచబడింది */
+            margin-left: 4px;
+            margin-top: auto; /* పైన స్పేస్‌ను వదిలి కిందికి రావడానికి */
+        }
+
+        /* Passport Size Photo Proportion Canvas */
+        .photo-container {
+            width: 13.5mm; 
+            aspect-ratio: 3.5 / 4.5;
+            border: 1.2px solid rgba(255, 255, 255, 0.8);
+            border-radius: 4px;
+            background: #ffffff;
+            overflow: hidden;
+            padding: 1px;
+            box-shadow: 0 1.5px 3px rgba(0,0,0,0.15);
+            flex-shrink: 0;
+        }
+
+        .photo-container img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover; 
+            border-radius: 1px;
+        }
+
+        /* QR కోడ్ బ్లాక్ - కింది వైపు ఉండేలా స్థిరపరిచాను */
+        .qr-section-block {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 100%;
+            gap: 4px;
+            margin-top: auto; /* గరిష్ఠంగా కిందికి నెడుతుంది */
+        }
+
+        .qr-holder {
+            width: 7.5mm; 
+            height: 7.5mm;
+            background: #ffffff !important;
+            padding: 1.5px;
+            border: 0.8px solid rgba(255, 255, 255, 0.5);
+            border-radius: 2px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+        }
+
+        .qr-holder canvas, .qr-holder img {
+            width: 100% !important;
+            height: 100% !important;
+        }
+
+        .scan-text {
+            font-size: 2.8pt;
+            font-weight: 700;
+            color: #ffffff;
+            line-height: 1;
+            text-transform: uppercase;
+            font-family: 'Fredoka', sans-serif;
+            letter-spacing: 0.1px;
+            writing-mode: vertical-rl;
+            text-orientation: mixed;
+            opacity: 0.85;
+        }
+
+        /* App UI Specific Styling */
+        .preview-heading {
+            font-family: 'Fredoka', sans-serif;
+            margin-bottom: 10px;
+            color: var(--text-dark);
+        }
+
+        .sandbox-box {
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 16px;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.03);
+            border: 2px dashed var(--border-main);
+            display: inline-block;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="home-nav">
+        <a href="http://fillandprint.github.io" class="btn-home">⬅ Home Page</a>
+    </div>
+
+    <header>
+        <h1>బుక్ స్టిక్కర్ మేకర్ (Validated Pro ఎడిషన్)</h1>
+        <p>Passport Size Aspect, Input Constraints, and Integrated Razorpay Gateway</p>
+    </header>
+
+    <div class="form-container">
+        <div class="form-grid">
+            <div class="form-group full-width">
+                <label for="f-name">విద్యార్థి పేరు (Student Name - Max 20)</label>
+                <input type="text" id="f-name" maxlength="20" placeholder="CHINTHALAPUDI VENKAT" value="CHINTHALAPUDI VENKAT">
+            </div>
+            <div class="form-group">
+                <label for="f-father">తండ్రి పేరు (Father's Name - Max 17)</label>
+                <input type="text" id="f-father" maxlength="17" placeholder="SRINIVASA RAMANA" value="SRINIVASA RAMANA">
+            </div>
+            <div class="form-group">
+                <label for="f-roll">రోల్ నంబర్ (Roll No - Max 3 Digits)</label>
+                <input type="text" id="f-roll" maxlength="3" placeholder="076" value="076">
+            </div>
+            <div class="form-group">
+                <label for="f-phone">ఫోన్ నంబర్ (Phone Number - 10 Digits)</label>
+                <input type="text" id="f-phone" maxlength="10" placeholder="9876543210" value="9876543210">
+            </div>
+            <div class="form-group">
+                <label for="f-class">తరగతి (Class - Max 17)</label>
+                <input type="text" id="f-class" maxlength="17" placeholder="III CLASS (B)" value="III CLASS (B)">
+            </div>
+            <div class="form-group full-width">
+                <label for="f-subject">విషయం (Subject - Disabled)</label>
+                <input type="text" id="f-subject" value="Write with pen after printing" disabled>
+            </div>
+            <div class="form-group full-width">
+                <label for="f-photo">విద్యార్థి ఫోటో (Upload Student Photo)</label>
+                <input type="file" id="f-photo" accept="image/*">
+            </div>
+            
+            <button id="f-update-preview-action" class="btn-update">Update Live Preview</button>
+            <button id="f-pay-download-action" class="btn-pay-download">Pay & Download PDF</button>
+        </div>
+    </div>
+
+    <h3 class="preview-heading">స్టిక్కర్ లైవ్ ప్రివ్యూ</h3>
+    <div class="sandbox-box">
+        <div id="sandbox-single-target"></div>
+    </div>
+
+    <div id="print-rendering-zone">
+        <div class="a4-document" id="matrix-sheet-target">
+            </div>
+    </div>
+
+    <script>
+        const placeholderImgBase64 = `data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="100" height="120" viewBox="0 0 100 120"><rect width="100" height="120" fill="%23e2e8f0"/><circle cx="50" cy="45" r="22" fill="%2394a3b8"/><path d="M10,110 Q50,75 90,110 Z" fill="%2394a3b8"/><circle cx="42" cy="42" r="2" fill="%23fff"/><circle cx="58" cy="42" r="2" fill="%23fff"/><path d="M45,55 Q50,58 55,55" stroke="%23fff" stroke-width="2" fill="none"/></svg>`;
+        let runningImageStateDataUrl = placeholderImgBase64;
+
+        const nameIn = document.getElementById('f-name');
+        const fatherIn = document.getElementById('f-father');
+        const rollIn = document.getElementById('f-roll');
+        const phoneIn = document.getElementById('f-phone');
+        const classIn = document.getElementById('f-class');
+        const subjectIn = document.getElementById('f-subject');
+        const photoIn = document.getElementById('f-photo');
+
+        // Enforcement of strict numerical limits on parameters
+        rollIn.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        phoneIn.addEventListener('input', function() {
+            this.value = this.value.replace(/[^0-9]/g, '');
+        });
+
+        photoIn.addEventListener('change', function(evt) {
+            const uploadedFile = evt.target.files[0];
+            if (uploadedFile) {
+                const readerInstance = new FileReader();
+                readerInstance.onload = function(event) {
+                    runningImageStateDataUrl = event.target.result;
+                };
+                readerInstance.readAsDataURL(uploadedFile);
+            }
+        });
+
+        function applyDynamicTextScaling(containerElement) {
+            if (!containerElement) return;
+            
+            const nameSpan = containerElement.querySelector('.name-span');
+            if(nameSpan) {
+                const nameLength = nameSpan.innerText.length;
+                if (nameLength > 16) {
+                    nameSpan.style.fontSize = '7.5pt';
+                } else {
+                    nameSpan.style.fontSize = '9.5pt';
+                }
+            }
+
+            const spans = containerElement.querySelectorAll('.val-span');
+            spans.forEach(span => {
+                const textLength = span.innerText.length;
+                if (textLength > 14) {
+                    span.style.fontSize = '6.2pt';
+                } else {
+                    span.style.fontSize = '7.5pt';
+                }
+            });
+        }
+
+        function compileRenderGrid() {
+            const valName = nameIn.value.trim().toUpperCase() || 'STUDENT NAME';
+            const valFather = fatherIn.value.trim() || "Father's Name";
+            const valRoll = rollIn.value.trim() || "000";
+            const valPhone = phoneIn.value.trim() || '0000000000';
+            const valClass = classIn.value.trim() || 'Class';
+            const valSubj = '_________________';
+            const valWeb = 'https://bit.ly/book-sticker';
+
+            function constructCardTemplateMarkup(nodeKey) {
+                return `
+                    <div class="sticker-card">
+                        <div class="name-banner-row">
+                            <strong>Name:</strong><span class="name-span">${valName}</span>
+                        </div>
+
+                        <div class="bottom-split-zone">
+                            <div class="info-side">
+                                <div class="text-row row-father"><strong>Father:</strong><span class="val-span">${valFather}</span></div>
+                                <div class="text-row row-roll"><strong>Roll No:</strong><span class="val-span">${valRoll}</span></div>
+                                <div class="text-row row-phone"><strong>Phone:</strong><span class="val-span">${valPhone}</span></div>
+                                <div class="text-row row-class"><strong>Class:</strong><span class="val-span">${valClass}</span></div>
+                                <div class="text-row row-subject"><strong>Subject:</strong><span class="val-span">${valSubj}</span></div>
+                            </div>
+                            
+                            <div class="right-media-side">
+                                <div class="photo-container">
+                                    <img src="${runningImageStateDataUrl}" alt="Student Image">
+                                </div>
+                                
+                                <div class="qr-section-block">
+                                    <div class="qr-holder" id="qr-element-key-${nodeKey}"></div>
+                                    <div class="scan-text">SCAN QR</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="branding-footer-row">To create more please visit: bit.ly/book-sticker or scan qr</div>
+                    </div>
+                `;
+            }
+
+            // Target single sandbox component view
+            const sandboxZone = document.getElementById('sandbox-single-target');
+            sandboxZone.innerHTML = constructCardTemplateMarkup('sandbox');
+            applyDynamicTextScaling(sandboxZone);
+
+            new QRCode(document.getElementById('qr-element-key-sandbox'), {
+                text: valWeb,
+                width: 36,
+                height: 36,
+                correctLevel: QRCode.CorrectLevel.H
+            });
+
+            // Target matrix canvas document base sheet setup
+            const sheetMatrixArea = document.getElementById('matrix-sheet-target');
+            sheetMatrixArea.innerHTML = '';
+            for (let i = 0; i < 18; i++) {
+                sheetMatrixArea.innerHTML += constructCardTemplateMarkup(i);
+            }
+
+            const individualCards = sheetMatrixArea.querySelectorAll('.sticker-card');
+            individualCards.forEach(card => applyDynamicTextScaling(card));
+
+            for (let i = 0; i < 18; i++) {
+                new QRCode(document.getElementById(`qr-element-key-${i}`), {
+                    text: valWeb,
+                    width: 36,
+                    height: 36,
+                    correctLevel: QRCode.CorrectLevel.H
+                });
+            }
+        }
+
+        // Trigger compilation solely upon Manual Update Action Execution
+        document.getElementById('f-update-preview-action').addEventListener('click', compileRenderGrid);
+        window.addEventListener('DOMContentLoaded', compileRenderGrid);
+
+        // Core PDF generation function with clean naming convention
+        function processStickersPdfGeneration() {
+            const captureElementDOM = document.getElementById('matrix-sheet-target');
+            html2canvas(captureElementDOM, {
+                scale: 3, 
+                useCORS: true,
+                allowTaint: true,
+                backgroundColor: "#ffffff"
+            }).then(canvasData => {
+                const targetCompressionDataUrl = canvasData.toDataURL('image/jpeg', 1.0);
+                const { jsPDF } = window.jspdf;
+                
+                const pdfInstance = new jsPDF({
+                    orientation: 'portrait',
+                    unit: 'mm',
+                    format: 'a4'
+                });
+
+                pdfInstance.addImage(targetCompressionDataUrl, 'JPEG', 0, 0, 210, 297);
+                const fileNameClean = nameIn.value.trim().replace(/\s+/g, '_') || 'Student';
+                pdfInstance.save(`Stickers_${fileNameClean}.pdf`);
+            });
+        }
+
+        // Integrated Testing Phase Razorpay Checkout Configuration Gateway Execution
+        document.getElementById('f-pay-download-action').addEventListener('click', function(e) {
+            e.preventDefault();
+            
+            // Standard Validation check prior to gateway activation
+            if(phoneIn.value.length !== 10) {
+                alert("దయచేసి 10 అంకెల సరైన ఫోన్ నంబర్ నమోదు చేయండి.");
+                return;
+            }
+
+            // Synchronize final updates directly into backend DOM elements before capture
+            compileRenderGrid();
+
+            const gatewayOptions = {
+                "key": "rzp_live_T18sE5oDk1k8ey", 
+                "amount": 100, 
+                "currency": "INR",
+                "name": "Book Sticker Maker Pro",
+                "description": "Premium 18 Book Stickers Sheet Generation Fee",
+                "handler": function (paymentResponse) {
+                    alert("పేమెంట్ విజయవంతమైంది! మీ స్టిక్కర్ల పిడిఎఫ్ డౌన్లోడ్ అవుతుంది.");
+                    processStickersPdfGeneration();
+                },
+                "prefill": {
+                    "name": nameIn.value,
+                    "contact": phoneIn.value
+                },
+                "theme": {
+                    "color": "#2c3e50"
+                }
+            };
+            
+            const razorpayCheckoutWindow = new Razorpay(gatewayOptions);
+            razorpayCheckoutWindow.open();
+        });
+    </script>
+</body>
+</html>
