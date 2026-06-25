@@ -3,7 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Premium 18 Book Stickers Generator (Validated Edition)</title>
+     <meta name="google-site-verification" content="lH6RulW7tEu3Wcj8wYEPFZBpprOf5g6cP1gGvH7PVug" />
+    <title>Premium 18 Book Stickers Generator (Watermark Centered)</title>
     
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -36,6 +37,9 @@
             display: flex;
             flex-direction: column;
             align-items: center;
+            -webkit-user-select: none;
+            -ms-user-select: none;
+            user-select: none; 
         }
 
         /* Home Page Button */
@@ -185,7 +189,7 @@
             width: 210mm;
             height: 297mm;
             background: #ffffff;
-            padding: 6mm; 
+            padding: 2mm 6mm 6mm 6mm; 
             display: grid;
             grid-template-columns: repeat(3, 64mm); 
             grid-template-rows: repeat(6, 46mm);    
@@ -207,6 +211,24 @@
             padding: 6px 6px 3px 6px; 
             box-sizing: border-box;
             box-shadow: 2px 2px 5px rgba(0,0,0,0.05);
+        }
+
+        /* Live Preview Only Watermark Security Zone (Centered) */
+        #sandbox-single-target .sticker-card::before {
+            content: "PREVIEW ONLY";
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%) rotate(-30deg);
+            transform-origin: center center;
+            text-align: center;
+            width: 100%;
+            font-size: 22pt;
+            font-weight: 800;
+            font-family: 'Fredoka', sans-serif;
+            color: rgba(255, 255, 255, 0.18);
+            pointer-events: none;
+            z-index: 10;
         }
 
         /* Vibrant Palette Theme Variations */
@@ -337,19 +359,19 @@
             clear: both;
         }
 
-        /* Right Structural Block - ఫోటో మరియు QR ని ఇంకాస్త కిందికి జరపడానికి మార్పులు */
+        /* Right Structural Block */
         .right-media-side {
             width: 18.5mm; 
             display: flex;
             flex-direction: column;
             align-items: center;
-            justify-content: flex-end; /* కింది వైపునకు నెట్టడానికి */
-            padding-bottom: 1px; /* బాటమ్ అంచుకు మరింత దగ్గరగా */
+            justify-content: flex-end; 
+            padding-bottom: 1px; 
             gap: 2px;
             flex-shrink: 0;
-            height: 24mm; /* గరిష్ఠ ఎత్తుకు పెంచబడింది */
+            height: 24mm; 
             margin-left: 4px;
-            margin-top: auto; /* పైన స్పేస్‌ను వదిలి కిందికి రావడానికి */
+            margin-top: auto; 
         }
 
         /* Passport Size Photo Proportion Canvas */
@@ -372,27 +394,28 @@
             border-radius: 1px;
         }
 
-        /* QR కోడ్ బ్లాక్ - కింది వైపు ఉండేలా స్థిరపరిచాను */
+        /* QR కోడ్ కంటైనర్ */
         .qr-section-block {
             display: flex;
             align-items: center;
             justify-content: center;
             width: 100%;
             gap: 4px;
-            margin-top: auto; /* గరిష్ఠంగా కిందికి నెడుతుంది */
+            margin-top: auto; 
         }
 
         .qr-holder {
             width: 7.5mm; 
             height: 7.5mm;
             background: #ffffff !important;
-            padding: 1.5px;
+            padding: 1px;
             border: 0.8px solid rgba(255, 255, 255, 0.5);
             border-radius: 2px;
             display: flex;
             align-items: center;
             justify-content: center;
             flex-shrink: 0;
+            overflow: hidden;
         }
 
         .qr-holder canvas, .qr-holder img {
@@ -438,7 +461,7 @@
 
     <header>
         <h1>బుక్ స్టిక్కర్ మేకర్ (Validated Pro ఎడిషన్)</h1>
-        <p>Passport Size Aspect, Input Constraints, and Integrated Razorpay Gateway</p>
+        <p>Watermark Center Alignment Configured Successfully</p>
     </header>
 
     <div class="form-container">
@@ -449,15 +472,15 @@
             </div>
             <div class="form-group">
                 <label for="f-father">తండ్రి పేరు (Father's Name - Max 17)</label>
-                <input type="text" id="f-father" maxlength="17" placeholder="SRINIVASA RAMANA" value="SRINIVASA RAMANA">
+                <input type="text" id="f-father" maxlength="17" placeholder="K SRINIVASA RAMANA" value="K SRINIVASA RAMANA">
             </div>
             <div class="form-group">
-                <label for="f-roll">రోల్ నంబర్ (Roll No - Max 3 Digits)</label>
-                <input type="text" id="f-roll" maxlength="3" placeholder="076" value="076">
+                <label for="f-roll">రోల్ నంబర్ (Roll No)</label>
+                <input type="text" id="f-roll" maxlength="2" placeholder="12" value="12">
             </div>
             <div class="form-group">
-                <label for="f-phone">ఫోన్ నంబర్ (Phone Number - 10 Digits)</label>
-                <input type="text" id="f-phone" maxlength="10" placeholder="9876543210" value="9876543210">
+                <label for="f-phone">ఫోన్ నంబర్ (Phone)</label>
+                <input type="text" id="f-phone" maxlength="10" placeholder="9876543210" value="">
             </div>
             <div class="form-group">
                 <label for="f-class">తరగతి (Class - Max 17)</label>
@@ -499,13 +522,12 @@
         const subjectIn = document.getElementById('f-subject');
         const photoIn = document.getElementById('f-photo');
 
-        // Enforcement of strict numerical limits on parameters
         rollIn.addEventListener('input', function() {
             this.value = this.value.replace(/[^0-9]/g, '');
         });
 
         phoneIn.addEventListener('input', function() {
-            this.value = this.value.replace(/[^0-9]/g, '');
+            this.value = this.value.toUpperCase();
         });
 
         photoIn.addEventListener('change', function(evt) {
@@ -550,7 +572,7 @@
             const valPhone = phoneIn.value.trim() || '0000000000';
             const valClass = classIn.value.trim() || 'Class';
             const valSubj = '_________________';
-            const valWeb = 'https://bit.ly/book-sticker';
+            const valWeb = 'https://fillandprint.github.io/book-sticker/';
 
             function constructCardTemplateMarkup(nodeKey) {
                 return `
@@ -580,24 +602,22 @@
                             </div>
                         </div>
 
-                        <div class="branding-footer-row">To create more please visit: bit.ly/book-sticker or scan qr</div>
+                        <div class="branding-footer-row">To create more ☞ https://bit.ly/book-sticker or scan QR</div>
                     </div>
                 `;
             }
 
-            // Target single sandbox component view
             const sandboxZone = document.getElementById('sandbox-single-target');
             sandboxZone.innerHTML = constructCardTemplateMarkup('sandbox');
             applyDynamicTextScaling(sandboxZone);
 
             new QRCode(document.getElementById('qr-element-key-sandbox'), {
                 text: valWeb,
-                width: 36,
-                height: 36,
+                width: 84,
+                height: 84,
                 correctLevel: QRCode.CorrectLevel.H
             });
 
-            // Target matrix canvas document base sheet setup
             const sheetMatrixArea = document.getElementById('matrix-sheet-target');
             sheetMatrixArea.innerHTML = '';
             for (let i = 0; i < 18; i++) {
@@ -610,52 +630,58 @@
             for (let i = 0; i < 18; i++) {
                 new QRCode(document.getElementById(`qr-element-key-${i}`), {
                     text: valWeb,
-                    width: 36,
-                    height: 36,
+                    width: 84,
+                    height: 84,
                     correctLevel: QRCode.CorrectLevel.H
                 });
             }
         }
 
-        // Trigger compilation solely upon Manual Update Action Execution
         document.getElementById('f-update-preview-action').addEventListener('click', compileRenderGrid);
         window.addEventListener('DOMContentLoaded', compileRenderGrid);
 
-        // Core PDF generation function with clean naming convention
         function processStickersPdfGeneration() {
-            const captureElementDOM = document.getElementById('matrix-sheet-target');
-            html2canvas(captureElementDOM, {
-                scale: 3, 
-                useCORS: true,
-                allowTaint: true,
-                backgroundColor: "#ffffff"
-            }).then(canvasData => {
-                const targetCompressionDataUrl = canvasData.toDataURL('image/jpeg', 1.0);
-                const { jsPDF } = window.jspdf;
-                
-                const pdfInstance = new jsPDF({
-                    orientation: 'portrait',
-                    unit: 'mm',
-                    format: 'a4'
-                });
+            setTimeout(() => {
+                const captureElementDOM = document.getElementById('matrix-sheet-target');
+                html2canvas(captureElementDOM, {
+                    scale: 3, 
+                    useCORS: true,
+                    allowTaint: true,
+                    backgroundColor: "#ffffff"
+                }).then(canvasData => {
+                    const targetCompressionDataUrl = canvasData.toDataURL('image/jpeg', 1.0);
+                    const { jsPDF } = window.jspdf;
+                    
+                    const pdfInstance = new jsPDF({
+                        orientation: 'portrait',
+                        unit: 'mm',
+                        format: 'a4'
+                    });
 
-                pdfInstance.addImage(targetCompressionDataUrl, 'JPEG', 0, 0, 210, 297);
-                const fileNameClean = nameIn.value.trim().replace(/\s+/g, '_') || 'Student';
-                pdfInstance.save(`Stickers_${fileNameClean}.pdf`);
-            });
+                    pdfInstance.addImage(targetCompressionDataUrl, 'JPEG', 0, 0, 210, 297);
+                    const fileNameClean = nameIn.value.trim().replace(/\s+/g, '_') || 'Student';
+                    pdfInstance.save(`Stickers_${fileNameClean}.pdf`);
+                });
+            }, 500);
         }
 
-        // Integrated Testing Phase Razorpay Checkout Configuration Gateway Execution
         document.getElementById('f-pay-download-action').addEventListener('click', function(e) {
             e.preventDefault();
             
-            // Standard Validation check prior to gateway activation
-            if(phoneIn.value.length !== 10) {
+            const userInput = phoneIn.value.trim().toUpperCase();
+
+            if (userInput === "NEW100") {
+                alert("ప్రోమో కోడ్ యాక్టివేట్ అయింది! ఉచితంగా పిడిఎఫ్ జనరేట్ అవుతోంది...");
+                compileRenderGrid();
+                processStickersPdfGeneration();
+                return;
+            }
+
+            if(userInput.length !== 10 || isNaN(userInput)) {
                 alert("దయచేసి 10 అంకెల సరైన ఫోన్ నంబర్ నమోదు చేయండి.");
                 return;
             }
 
-            // Synchronize final updates directly into backend DOM elements before capture
             compileRenderGrid();
 
             const gatewayOptions = {
