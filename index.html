@@ -33,7 +33,7 @@
             font-family: 'Quicksand', sans-serif;
             background-color: var(--bg-app);
             color: var(--text-dark);
-            padding: 20px;
+            padding: 0 0 20px 0; /* Updated to handle nav header */
             display: flex;
             flex-direction: column;
             align-items: center;
@@ -42,39 +42,54 @@
             user-select: none; 
         }
 
-        /* Home Page Button */
-        .home-nav {
-            width: 100%;
-            max-width: 550px;
+        /* ===== Navigation Header (Fixed Left Alignment) ===== */
+        .nav-header {
+            background-color: #1e3a8a;
+            color: white;
+            padding: 12px 20px;
             display: flex;
-            justify-content: flex-start;
-            margin-bottom: 15px;
+            align-items: center;
+            justify-content: flex-start; 
+            gap: 12px;                  
+            box-shadow: 0 2px 8px rgba(0,0,0,0.15);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+            width: 100%;
+            margin-bottom: 25px;
         }
-
-        .btn-home {
+        .btn-nav-home {
+            background-color: rgba(255, 255, 255, 0.15);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 8px 16px;
+            border-radius: 4px;
+            font-size: 14px;
+            font-weight: bold;
+            text-decoration: none;
+            cursor: pointer;
+            transition: background 0.2s;
+            margin: 0;
+            flex-shrink: 0;
             display: inline-flex;
             align-items: center;
-            background-color: #ffffff;
-            color: var(--text-dark);
-            border: 2px solid var(--border-main);
-            padding: 8px 16px;
             font-family: 'Fredoka', sans-serif;
-            font-weight: 600;
-            font-size: 0.95rem;
-            text-decoration: none;
-            border-radius: 8px;
-            box-shadow: 0 3px 0px var(--border-main);
-            transition: transform 0.1s, box-shadow 0.1s;
         }
-
-        .btn-home:active {
-            transform: translateY(3px);
-            box-shadow: 0 0px 0px var(--border-main);
+        .btn-nav-home:hover {
+            background-color: rgba(255, 255, 255, 0.25);
+        }
+        .nav-title {
+            font-size: 16px;
+            font-weight: bold;
+            white-space: nowrap;
+            margin: 0;
+            color: white;
         }
 
         header {
             text-align: center;
             margin-bottom: 25px;
+            padding: 0 20px;
         }
 
         header h1 {
@@ -451,12 +466,19 @@
             border: 2px dashed var(--border-main);
             display: inline-block;
         }
+
+        @media print {
+            .nav-header {
+                display: none !important;
+            }
+        }
     </style>
 </head>
 <body>
 
-    <div class="home-nav">
-        <a href="http://fillandprint.github.io" class="btn-home">⬅ Home Page</a>
+    <div class="nav-header">
+        <a href="https://fillandprint.github.io" class="btn-nav-home">Home</a>
+        <span class="nav-title">Book Sticker Maker</span>
     </div>
 
     <header>
